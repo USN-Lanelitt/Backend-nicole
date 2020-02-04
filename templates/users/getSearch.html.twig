@@ -1,0 +1,28 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Resultat{% endblock %}
+
+{% block body %}
+    {% if users %}
+        <table id="users" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Brukernavn</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <a href="/users/getUserItems/{{ user.id }}" class="btn btn-dark">Se eiendeler</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No users to display</p>
+    {% endif %}
+{% endblock %}

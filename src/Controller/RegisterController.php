@@ -13,6 +13,12 @@ header("Access-Control-Allow-Origin: *");
 
 class RegisterController extends AbstractController{
 
+    private $logger;
+
+    public function __construct(LoggerInterface $logger){
+        $this->logger=$logger;
+    }
+
     public function registerUser(Request $request) {
 
         $this->logger->info($request);

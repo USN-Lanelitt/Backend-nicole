@@ -1,0 +1,31 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Alle mine venner{% endblock %}
+
+{% block body %}
+    {% if users %}
+        <table id="friends" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Fornavn</th>
+                <th>Etternavn</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.fname }}</td>
+                    <td>{{ user.lastname }}</td>
+                    <td>
+                        <a href="/users/getFriend/{{ user.id }}" class="btn btn-dark">Se eiendeler</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No friends to display</p>
+    {% endif %}
+{% endblock %}
+

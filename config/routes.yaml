@@ -2,17 +2,61 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
+get_all_users:
+  path: /
+  controller: App\Controller\UserController::getAllUsers
+  methods:    GET
 
-users:
-  path: /api/users
-  controller: App\Controller\userController::getUsers
+get_search:
+  path: /users/getSearch
+  controller: App\Controller\UserController::getSearch
+  methods:    GET
 
-register:
-  path: /api/register
-  controller: App\Controller\registerUserController::registerUser
+get_user_items:
+  path: /users/getUserItems/{id}
+  controller: App\Controller\UserController::getUserItems
+  methods:    GET
 
-login:
-  path: /api/login
-  controller: App\Controller\loginController::verifyLogin
+get_all_friends:
+  path: /users/getAllFriends/{id}
+  controller: App\Controller\UserController::getAllFriends
+  methods:    GET
+
+get_all_follows:
+  path: /users/getAllFollows/{id}
+  controller: App\Controller\UserController::getAllFollows
+  methods:    GET
+
+get_all_followers:
+  path: /users/getAllFollowers/{id}
+  controller: App\Controller\UserController::getAllFollowers
+  methods:    GET
+
+get_friend:
+    path: /users/getFriend/{id}
+    controller: App\Controller\UserController::getFriend
+    methods:    GET
 
 
+new_friendship:
+  path: /users/newFriendship/{id}
+  controller: App\Controller\UserController::newFriendship
+  methods:    GET|POST
+
+
+new_follow:
+  path: /users/newFollow/{id}
+  controller: App\Controller\UserController::newFollow
+  methods:    GET|POST
+
+
+edit_user:
+  path: /users/edit/{id}
+  controller: App\Controller\UserController::edit
+  methods:    GET|POST
+
+
+delete_friendship:
+  path: /users/deleteFriendship/{id}
+  controller: App\Controller\UserController::deleteFriendship
+  methods:    DELETE

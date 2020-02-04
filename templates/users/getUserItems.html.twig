@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block body %}
+    <div id="users">
+        <h1>
+            {{ user.username }}
+            <a href="#" class="btn btn-light new-friend" data-id="{{ user.id }}">Send venneforespørsel</a>
+            <a href="#" class="btn btn-light follow" data-id="{{ user.id }}">Følg</a>
+        </h1>
+        <br/>
+        <h2> Eiendel </h2>
+        <h3> Info.. </h3>
+    </div>
+    <hr>
+    <a href="/">Go Back</a>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/friendship.js"></script>
+{% endblock %}

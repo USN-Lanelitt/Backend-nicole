@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,7 +26,7 @@ class User
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $lname;
+    private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -32,7 +34,7 @@ class User
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255)User
      */
     private $password;
 
@@ -45,6 +47,21 @@ class User
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $mobile;
+
+    /**
+ * @ORM\OneToMany(targetEntity="App\Entity\UserConnections", mappedBy="user")
+ */
+    private $userConnections;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserConnections", mappedBy="user2")
+     */
+    private $userConnections2;
+
+    public function __construct()
+    {
+        $this->userConnections = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -63,14 +80,14 @@ class User
         return $this;
     }
 
-    public function getLname(): ?string
+    public function getLastname(): ?string
     {
-        return $this->lname;
+        return $this->lastname;
     }
 
-    public function setLname(?string $lname): self
+    public function setLastname(?string $lastname): self
     {
-        $this->lname = $lname;
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -119,6 +136,38 @@ class User
     public function setMobile(?string $mobile): self
     {
         $this->mobile = $mobile;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection|UserConnections[]
+     */
+    public function getUserConnections(): Collection
+    {
+        return $this->userConnections;
+    }
+
+    public function addUserConnection(UserConnections $userConnection): self
+    {
+        if (!$this->userConnections->contains($userConnection)) {
+            $this->userConnections[] = $userConnection;
+            $userConnection->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserConnection(UserConnections $userConnection): self
+    {
+        if ($this->userConnections->contains($userConnection)) {
+            $this->userConnections->removeElement($userConnection);
+            // set the owning side to null (unless already changed)
+            if ($userConnection->getUser() === $this) {
+                $userConnection->setUser(null);
+            }
+        }
 
         return $this;
     }
