@@ -13,50 +13,50 @@ get_search:
   methods:    GET
 
 get_user_items:
-  path: /users/getUserItems/{id}
+  path: /users/getUserItems/{iId}
   controller: App\Controller\UserController::getUserItems
   methods:    GET
 
 get_all_friends:
-  path: /users/getAllFriends/{id}
+  path: /users/getAllFriends/{iId}
   controller: App\Controller\UserController::getAllFriends
   methods:    GET
 
 get_all_follows:
-  path: /users/getAllFollows/{id}
+  path: /users/getAllFollows/{iId}
   controller: App\Controller\UserController::getAllFollows
   methods:    GET
 
 get_all_followers:
-  path: /users/getAllFollowers/{id}
+  path: /users/getAllFollowers/{iId}
   controller: App\Controller\UserController::getAllFollowers
   methods:    GET
 
 get_friend:
-    path: /users/getFriend/{id}
+    path: /users/getFriend/{iId}
     controller: App\Controller\UserController::getFriend
     methods:    GET
 
 
 new_friendship:
-  path: /users/newFriendship/{id}
+  path: /users/newFriendship/{iId}
   controller: App\Controller\UserController::newFriendship
   methods:    GET|POST
 
 
 new_follow:
-  path: /users/newFollow/{id}
+  path: /users/newFollow/{iId}
   controller: App\Controller\UserController::newFollow
   methods:    GET|POST
 
 
 edit_user:
-  path: /users/edit/{id}
+  path: /users/edit/{iId}
   controller: App\Controller\UserController::edit
   methods:    GET|POST
 
 
 delete_friendship:
-  path: /users/deleteFriendship/{id}
+  path: /users/deleteFriendship/{iId}
   controller: App\Controller\UserController::deleteFriendship
   methods:    DELETE

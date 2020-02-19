@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\AssetCategories;
+use App\Entity\Assets;
+use App\Entity\IndividConnections;
+use App\Entity\Individuals;
 
 use App\Entity\UserConnections;
+use App\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +18,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 use App\Entity\UserConnectionsRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 
 use Psr\Log\LoggerInterface;
@@ -26,29 +33,90 @@ class UserController extends AbstractController
     //$sessionVal = $this->get('session')->get('aBasket');
     // Append value to retrieved array.
 
+
+    /**
+     * @Route("/home", name="home")
+     */
+     public function index(){
+         $individ = new Individuals();
+         $individ -> setFirstname("Nicole");
+         $individ -> setLastname("Bendu");
+
+         $user = new Users();
+         $user->setActive(1);
+         $user->setNickname("nicben");
+         $user->setPassword("123");
+         $user->setIndivid($individ);
+
+         $oCat= $this->getDoctrine()->getRepository(AssetCategories::class)->find(1);
+
+         $asset = new Assets();
+         $asset->setCategory($oCat);
+         $asset ->setAssetname('Mus');
+         $asset->setDescription('Trådløs');
+         $asset->setAssetCondition('bra');
+
+         $individ->addAsset($asset);
+
+
+ //      $normalizers = [new ObjectNormalizer()];
+//       $encoders = [new JsonEncoder()];
+//       $serializer = new Serializer($normalizers, $encoders);
+//       $serializedData = $serializer->serialize($individ, 'json', [
+//       ObjectNormalizer::SKIP_NULL_VALUES => true]);
+
+//         var_dump($serializedData); die;
+
+         return $this->json($individ, Response::HTTP_OK, [], [
+             ObjectNormalizer::SKIP_NULL_VALUES =>true,
+             ObjectNormalizer::ATTRIBUTES => ['firstname'],
+            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object) {
+
+             return $object->getId();
+            }
+         ]);
+
+     }
+
+
     public function __construct(LoggerInterface $logger, SessionInterface $session){
         $this->logger=$logger;
         $this->session = $session;
     }
 
     public function getAllUsers() {
-        $users= $this->getDoctrine()->getRepository(User::class)->findAll();
-        return $this->render('users/index.html.twig', array('users' => $users));
+//        $encoders = [new XmlEncoder(), new JsonEncoder()];
+//        $normalizers = [new ObjectNormalizer()];
+//        $serializer = new Serializer($normalizers, $encoders);
+
+        $aUsers= $this->getDoctrine()->getRepository(AssetCategories::class)->findAll();
+
+        $this->logger->info("eeeeeeeeeee");
+
+
+        return $this->json($aUsers, Response::HTTP_OK, [], [
+            ObjectNormalizer::SKIP_NULL_VALUES =>true,
+           //ObjectNormalizer::ATTRIBUTES => ['password'],
+            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object) {
+                return $object->getCategory();
+            }
+        ]);
+
     }
 
-    public function getUserItems($id){
-        $this->logger->info($id);
+    public function getUserItems($iId){
+        $this->logger->info($iId);
 
         $conn = $this->getDoctrine()->getConnection();
-        $sql = 'SELECT user2_id FROM lånelitt.user_connections WHERE  user_id= 4';
+        $sql = 'SELECT individ2_id FROM individ_connections WHERE  individ1_id= 4';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['id' => $id]);
-        $users_id = $stmt->fetchAll();
+        $stmt->execute(['id' => $iId]);
+        $aUsersId = $stmt->fetchAll();
 
-        $this->logger->info(json_encode($users_id));
+        $this->logger->info(json_encode($aUsersId));
 
-        $ids = array_column($users_id, 'user2_id');
-        $this->logger->info(json_encode($ids));
+        $iIds = array_column($aUsersId, 'individ2_id');
+        $this->logger->info(json_encode($iIds));
 
         for ($i = 0; $i <= 1; $i++){
             //if($id == $ids[$i]) {
@@ -59,66 +127,66 @@ class UserController extends AbstractController
            // }
         }
         $this->logger->info('ikke funnet');
-        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+        $user = $this->getDoctrine()->getRepository(Individuals::class)->find($iIds);
         return $this->render('users/getUserItems.html.twig', array('user' => $user));
     }
 
-    public function getAllFriends($id){
-        $this->logger->info($id);
+    public function getAllFriends($iId){
+        $this->logger->info($iId);
 
         $conn = $this->getDoctrine()->getConnection();
 
-        $sql = 'SELECT user2_id FROM lånelitt.user_connections WHERE  user_id= 4 AND follow = 0';
+        $sql = 'SELECT individ2_id FROM individ_connections WHERE individ1_id= 4';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['user' => $id]);
+        $stmt->execute(['user' => $iId]);
 
-        $users_id = $stmt->fetchAll();
+        $aUsersId = $stmt->fetchAll();
 
-        $ids = array_column($users_id, 'user2_id');
+        $iIds = array_column($aUsersId, 'individ2_id');
+        $this->logger->info(json_encode($iIds));
+
+        $users = $this->getDoctrine()->getRepository(Individuals::class)->findBy(array('id' => $iIds));
+        return $this->render('users/getAllFriends.html.twig', array('users' => $users));
+    }
+
+    /*public function getAllFollows($iId){
+        $this->logger->info($iId);
+
+        $conn = $this->getDoctrine()->getConnection();
+
+        $sql = 'SELECT individ2_id FROM lånelitt.user_connections WHERE  user_id= 4 AND follow = 1';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['user' => $iId]);
+
+        $aUsersId = $stmt->fetchAll();
+
+        $ids = array_column($aUsersId, 'user2_id');
         $this->logger->info(json_encode($ids));
 
         $users = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $ids));
         return $this->render('users/getAllFriends.html.twig', array('users' => $users));
-    }
+    }*/
 
-    public function getAllFollows($id){
-        $this->logger->info($id);
-
-        $conn = $this->getDoctrine()->getConnection();
-
-        $sql = 'SELECT user2_id FROM lånelitt.user_connections WHERE  user_id= 4 AND follow = 1';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(['user' => $id]);
-
-        $users_id = $stmt->fetchAll();
-
-        $ids = array_column($users_id, 'user2_id');
-        $this->logger->info(json_encode($ids));
-
-        $users = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $ids));
-        return $this->render('users/getAllFriends.html.twig', array('users' => $users));
-    }
-
-    public function getAllFollowers($id){
-        $this->logger->info($id);
+    /*public function getAllFollowers($iId){
+        $this->logger->info($iId);
 
         $conn = $this->getDoctrine()->getConnection();
 
         $sql = 'SELECT user_id FROM lånelitt.user_connections WHERE  user2_id= 4 AND follow = 1';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['user' => $id]);
+        $stmt->execute(['user' => $iId]);
 
-        $users_id = $stmt->fetchAll();
+        $aUsersId = $stmt->fetchAll();
 
-        $ids = array_column($users_id, 'user_id');
+        $ids = array_column($aUsersId, 'user_id');
         $this->logger->info(json_encode($ids));
 
         $users = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $ids));
         return $this->render('users/getAllFriends.html.twig', array('users' => $users));
-    }
+    }*/
 
-    public function getFriend($id){
-        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+    public function getFriend($iId){
+        $user = $this->getDoctrine()->getRepository(Individuals::class)->find($iId);
         return $this->render('users/getFriend.html.twig', array('user' => $user));
     }
 
@@ -143,40 +211,36 @@ class UserController extends AbstractController
             $this->logger->info($id);
             $this->logger->info('newfriend');
 
-            $user1 = $this->getDoctrine()->getRepository(User::class)->find(4);
-            $user2 = $this->getDoctrine()->getRepository(User::class)->find($id);
+            $user1 = $this->getDoctrine()->getRepository(Individuals::class)->find(4);
+            $user2 = $this->getDoctrine()->getRepository(Individuals::class)->find($id);
 
             $entityManager = $this->getDoctrine()->getManager();
 
-            $userConn = new UserConnections();
-            $userConn->setUser($user1);
-            $userConn->setUser2($user2);
-            $userConn->setFollow(false);
+            $userConn = new IndividConnections();
+            $userConn->setIndivid1($user1);
+            $userConn->setIndivid2($user2);
             $entityManager->persist($userConn);
             $entityManager->flush();
 
-            $userConn2 = new UserConnections();
-            $userConn2->setUser($user2);
-            $userConn2->setUser2($user1);
-            $userConn2->setFollow(false);
+            $userConn2 = new IndividConnections();
+            $userConn2->setIndivid1($user2);
+            $userConn2->setIndivid2($user1);
 
             $entityManager->persist($userConn2);
             $entityManager->flush();
 
             return new JsonResponse('Vennskap er opprettet');
         /*}
-
         return new JsonResponse('V');*/
-
     }
 
-    public function newFollow(Request $request, $id){
+    public function newFollow(Request $request, $iId){
         $this->logger->info($request);
-        $this->logger->info($id);
+        $this->logger->info($iId);
         $this->logger->info('newFollow');
 
-        $user1 = $this->getDoctrine()->getRepository(User::class)->find(4);
-        $user2 = $this->getDoctrine()->getRepository(User::class)->find($id);
+        $user1 = $this->getDoctrine()->getRepository(Individuals::class)->find($iId);
+        $user2 = $this->getDoctrine()->getRepository(Individuals::class)->find(4);
 
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -199,12 +263,10 @@ class UserController extends AbstractController
         return new JsonResponse('følger');
     }
 
-    public function deleteFriendship(Request $request, $id)
+    public function deleteFriendship(Request $request, $iId)
     {
-
-
         $this->logger->info($request);
-        $this->logger->info($id);
+        $this->logger->info($iId);
 
         //$this->delete($id);
 
@@ -212,18 +274,18 @@ class UserController extends AbstractController
         $conn = $this->getDoctrine()->getConnection();
 
         $sql = 'SELECT id
-                FROM lånelitt.user_connections
-                WHERE  (user_id = 4 AND user2_id = :id2)
-                   OR (user_id = 9 and user2_id = :id2)';
+                FROM individ_connections
+                WHERE  (individ1_id = 4 AND individ2_id = :id2)
+                   OR (individ1_id = :id2 and individ2_id = 4)';
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['id2' => $id]);
+        $stmt->execute(['id2' => $iId]);
         $users_id = $stmt->fetchAll();
 
         $ids = array_column($users_id, 'id');
         $this->logger->info(json_encode($ids));
 
-        if ($ids != null) {
+        /*if ($ids != null) {
 
             $id1 = $ids[0];
             $id2 = $ids[1];
@@ -236,13 +298,16 @@ class UserController extends AbstractController
             $entityManager->remove($user2);
             $entityManager->flush();
             $this->logger->info('vennskap mellom 4 og ' . $id . ' er slettet');
+
+            $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+            return $this->render('users/getUserItems.html.twig', array('user' => $user));
         } else {
             $this->logger->info('vennskap finnes ikke');
-        }
+        }*/
         return new JsonResponse('slettet');
     }
 
-    public function delete( $id) {
+    /*public function delete($iId) {
         $conn = $this->getDoctrine()->getConnection();
         $sql = 'SELECT id 
                 FROM lånelitt.user_connections 
@@ -250,18 +315,18 @@ class UserController extends AbstractController
                    OR (user_id = id and user2_id = 4)';
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['id' => $id]);
-        $users_id = $stmt->fetchAll();
+        $stmt->execute(['id' => $iId]);
+        $aUsersId = $stmt->fetchAll();
 
-        $ids = array_column($users_id, 'id');
+        $ids = array_column($aUsersId, 'id');
         $this->logger->info(json_encode($ids));
 
         if($ids != null) {
             $id1 = $ids[0];
             $id2 = $ids[1];
 
-            $user1 = $this->getDoctrine()->getRepository(UserConnections::class)->find($id1);
-            $user2 = $this->getDoctrine()->getRepository(UserConnections::class)->find($id2);
+            $user1 = $this->getDoctrine()->getRepository(IndividConnections::class)->find($id1);
+            $user2 = $this->getDoctrine()->getRepository(IndividConnections::class)->find($id2);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($user1);
@@ -273,9 +338,9 @@ class UserController extends AbstractController
             $this->logger->info('vennskap finnes ikke');
         }
         return new JsonResponse('slettet');
-    }
+    }*/
 
-    public function getSearch(Request $request) {
+   /* public function getSearch(Request $request) {
 
         //$request = $this->getRequest();
         $data =$request->request->get('search_username');
@@ -292,20 +357,16 @@ class UserController extends AbstractController
         $this->logger->info(json_encode($data));
 
         $username = $stmt->fetchAll();
-        $users = $this->getDoctrine()->getRepository(User::class)->findBy(array('username' => $username));
+        $users = $this->getDoctrine()->getRepository(Users::class)->findBy(array('username' => $username));
         return $this->render('users/getSearch.html.twig', array('users' => $users));
 
-
-
             /*return $this->redirectToRoute('get_search');
-
-
 
         }
 
         return $this->render('users/getSearch.html.twig', array(
             'form' => $form->createView()
-        ));*/
-    }
+        ));
+    }*/
 
 }

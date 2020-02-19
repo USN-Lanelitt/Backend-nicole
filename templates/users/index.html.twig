@@ -4,7 +4,7 @@
 {% block title %}Alle brukere{% endblock %}
 
 {% block body %}
-    <form class="form-search" method="get" action="users/getSearch">
+    <form class="form-search" method="get" >
         <input type="text" name="search_username" id="inputUsername" class="form-control" placeholder="Brukernavn" required autofocus>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">
@@ -23,9 +23,9 @@
             <tbody>
             {% for user in users %}
                 <tr>
-                    <td>{{ user.username }}</td>
+                    <td>{{ user.firstname }}</td>
                     <td>
-                        <a href="/users/getUserItems/{{ user.id }}" class="btn btn-dark">Se eiendeler</a>
+                        <a href="/users/getUserItems/{{ user.id }}" class="btn btn-dark">Se eiendeler</a>----
                     </td>
                 </tr>
             {% endfor %}
