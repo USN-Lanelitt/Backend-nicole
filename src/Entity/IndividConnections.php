@@ -17,14 +17,12 @@ class IndividConnections
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\individuals")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Individuals", inversedBy="individ2")
      */
     private $individ1;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\individuals")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Individuals", inversedBy="individConnections2")
      */
     private $individ2;
 
@@ -36,31 +34,31 @@ class IndividConnections
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $connection_type;
+    private $connectionType;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIndivid1(): ?individuals
+    public function getIndivid1(): ?Individuals
     {
         return $this->individ1;
     }
 
-    public function setIndivid1(?individuals $individ1): self
+    public function setIndivid1(?Individuals $individ1): self
     {
         $this->individ1 = $individ1;
 
         return $this;
     }
 
-    public function getIndivid2(): ?individuals
+    public function getIndivid2(): ?Individuals
     {
         return $this->individ2;
     }
 
-    public function setIndivid2(?individuals $individ2): self
+    public function setIndivid2(?Individuals $individ2): self
     {
         $this->individ2 = $individ2;
 
@@ -81,12 +79,12 @@ class IndividConnections
 
     public function getConnectionType(): ?bool
     {
-        return $this->connection_type;
+        return $this->connectionType;
     }
 
-    public function setConnectionType(?bool $connection_type): self
+    public function setConnectionType(?bool $connectionType): self
     {
-        $this->connection_type = $connection_type;
+        $this->connectionType = $connectionType;
 
         return $this;
     }

@@ -34,71 +34,57 @@ class UserController extends AbstractController
     // Append value to retrieved array.
 
 
-    /**
-     * @Route("/home", name="home")
-     */
-     public function index(){
-         $individ = new Individuals();
-         $individ -> setFirstname("Nicole");
-         $individ -> setLastname("Bendu");
-
-         $user = new Users();
-         $user->setActive(1);
-         $user->setNickname("nicben");
-         $user->setPassword("123");
-         $user->setIndivid($individ);
-
-         $oCat= $this->getDoctrine()->getRepository(AssetCategories::class)->find(1);
-
-         $asset = new Assets();
-         $asset->setCategory($oCat);
-         $asset ->setAssetname('Mus');
-         $asset->setDescription('Trådløs');
-         $asset->setAssetCondition('bra');
-
-         $individ->addAsset($asset);
-
-
- //      $normalizers = [new ObjectNormalizer()];
-//       $encoders = [new JsonEncoder()];
-//       $serializer = new Serializer($normalizers, $encoders);
-//       $serializedData = $serializer->serialize($individ, 'json', [
-//       ObjectNormalizer::SKIP_NULL_VALUES => true]);
-
-//         var_dump($serializedData); die;
-
-         return $this->json($individ, Response::HTTP_OK, [], [
-             ObjectNormalizer::SKIP_NULL_VALUES =>true,
-             ObjectNormalizer::ATTRIBUTES => ['firstname'],
-            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object) {
-
-             return $object->getId();
-            }
-         ]);
-
-     }
-
-
     public function __construct(LoggerInterface $logger, SessionInterface $session){
         $this->logger=$logger;
         $this->session = $session;
     }
 
-    public function getAllUsers() {
-//        $encoders = [new XmlEncoder(), new JsonEncoder()];
-//        $normalizers = [new ObjectNormalizer()];
-//        $serializer = new Serializer($normalizers, $encoders);
+    public function newIndivid(){
 
-        $aUsers= $this->getDoctrine()->getRepository(AssetCategories::class)->findAll();
+        $this->logger->info('newindivid');
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $category = new AssetCategories();
+        $category->setCategoryName("Pc-utstyr");
+        $category->setActive(1);
+
+        $individ = new Individuals();
+        $individ->setFirstname("Mari");
+        $individ->setLastname("Hansen");
+
+     //   $individ = $this->getDoctrine()->getRepository(Individuals::class)->find(1);
+
+        $asset = new Assets();
+        $asset->setCategory($category);
+        $asset ->setIndivid($individ);
+        $asset->setAssetname('Skjerm');
+        $asset->setDescription('Trådløs');
+
+        $entityManager->persist($category);
+        $entityManager->persist($individ);
+        $entityManager->persist($asset);
+        $entityManager->flush();
+
+
+
+        // $entityManager->flush();
+
+        return new JsonResponse('Nytt individ');
+
+    }
+
+    public function getAllUsers() {
+        $individer = $this->getDoctrine()->getRepository(Individuals::class)->findAll();
 
         $this->logger->info("eeeeeeeeeee");
 
 
-        return $this->json($aUsers, Response::HTTP_OK, [], [
-            ObjectNormalizer::SKIP_NULL_VALUES =>true,
-           //ObjectNormalizer::ATTRIBUTES => ['password'],
-            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object) {
-                return $object->getCategory();
+        return $this->json($individer, Response::HTTP_OK, [], [
+            ObjectNormalizer::SKIP_NULL_VALUES => true,
+            ObjectNormalizer::ATTRIBUTES => ['firstName', 'lastName'],
+            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
             }
         ]);
 

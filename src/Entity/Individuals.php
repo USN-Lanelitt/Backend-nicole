@@ -21,37 +21,17 @@ class Individuals
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $firstname;
+    private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $middlename;
+    private $middleName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $lastname;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $address;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $address2;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $zipcode;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $city;
+    private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -59,35 +39,25 @@ class Individuals
     private $email;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $mobile;
-
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $birthdate;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $profile_image;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Users", mappedBy="individ", cascade={"persist", "remove"})
-     */
-    private $testUsers;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Assets", mappedBy="individ", orphanRemoval=true)
      */
     private $assets;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\IndividConnections", mappedBy="individ1")
+     */
     private $individConnections;
-    private $Users;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\IndividConnections", mappedBy="individ2")
+     */
+    private $individConnections2;
 
     public function __construct()
     {
         $this->assets = new ArrayCollection();
+        $this->individConnections = new ArrayCollection();
+        $this->individConnections2 = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,86 +65,38 @@ class Individuals
         return $this->id;
     }
 
-    public function getFirstname(): ?string
+    public function getFirstName(): ?string
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
-    public function setFirstname(?string $firstname): self
+    public function setFirstName(?string $firstName): self
     {
-        $this->firstname = $firstname;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
-    public function getMiddlename(): ?string
+    public function getMiddleName(): ?string
     {
-        return $this->middlename;
+        return $this->middleName;
     }
 
-    public function setMiddlename(?string $middlename): self
+    public function setMiddleName(?string $middleName): self
     {
-        $this->middlename = $middlename;
+        $this->middleName = $middleName;
 
         return $this;
     }
 
-    public function getLastname(): ?string
+    public function getLastName(): ?string
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
-    public function setLastname(?string $lastname): self
+    public function setLastName(?string $lastName): self
     {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?string $address): self
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    public function getAddress2(): ?string
-    {
-        return $this->address2;
-    }
-
-    public function setAddress2(?string $address2): self
-    {
-        $this->address2 = $address2;
-
-        return $this;
-    }
-
-    public function getZipcode(): ?int
-    {
-        return $this->zipcode;
-    }
-
-    public function setZipcode(?int $zipcode): self
-    {
-        $this->zipcode = $zipcode;
-
-        return $this;
-    }
-
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
-    public function setCity(?string $city): self
-    {
-        $this->city = $city;
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -187,59 +109,6 @@ class Individuals
     public function setEmail(?string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getMobile(): ?int
-    {
-        return $this->mobile;
-    }
-
-    public function setMobile(?int $mobile): self
-    {
-        $this->mobile = $mobile;
-
-        return $this;
-    }
-
-    public function getBirthdate(): ?\DateTimeInterface
-    {
-        return $this->birthdate;
-    }
-
-    public function setBirthdate(?\DateTimeInterface $birthdate): self
-    {
-        $this->birthdate = $birthdate;
-
-        return $this;
-    }
-
-    public function getProfileImage(): ?string
-    {
-        return $this->profile_image;
-    }
-
-    public function setProfileImage(?string $profile_image): self
-    {
-        $this->profile_image = $profile_image;
-
-        return $this;
-    }
-
-    public function getUsers(): ?Users
-    {
-        return $this->Users;
-    }
-
-    public function setUsers(Users $users): self
-    {
-        $this->users = $users;
-
-        // set the owning side of the relation if necessary
-        if ($users->getIndivid() !== $this) {
-            $users->setIndivid($this);
-        }
 
         return $this;
     }
@@ -274,31 +143,63 @@ class Individuals
 
         return $this;
     }
+
     /**
      * @return Collection|IndividConnections[]
      */
-    /*public function getIndividConnection(): Collection
+    public function getIndividConnections(): Collection
     {
         return $this->individConnections;
-    }*/
+    }
 
-    public function addIndividConnection(IndividConnections $individConnection): self
+    public function addIndividConnections(IndividConnections $individConnections): self
     {
-        if (!$this->individConnections->contains($individConnection)) {
-            $this->individConnections[] = $individConnection;
-            $individConnection->setIndivid($this);
+        if (!$this->individConnections->contains($individConnections)) {
+            $this->individConnections[] = $individConnections;
+            $individConnections->setIndivid1($this);
         }
 
         return $this;
     }
 
-    public function removeIndividConnection(IndividConnections $individConnection): self
+    public function removeIndividConnections(IndividConnections $individConnections): self
     {
-        if ($this->individConnections->contains($individConnection)) {
-            $this->individConnections->removeElement($individConnection);
+        if ($this->individConnections->contains($individConnections)) {
+            $this->individConnections->removeElement($individConnections);
             // set the owning side to null (unless already changed)
-            if ($individConnection->getIndivid() === $this) {
-                $individConnection->setIndivid(null);
+            if ($individConnections->getIndivid1() === $this) {
+                $individConnections->setIndivid1(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IndividConnections[]
+     */
+    public function getIndividConnections2(): Collection
+    {
+        return $this->individConnections2;
+    }
+
+    public function addIndividConnections2(IndividConnections $individConnections2): self
+    {
+        if (!$this->individConnections2->contains($individConnections2)) {
+            $this->individConnections2[] = $individConnections2;
+            $individConnections2->setIndivid2($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndividConnections2(IndividConnections $individConnections2): self
+    {
+        if ($this->individConnections2->contains($individConnections2)) {
+            $this->individConnections2->removeElement($individConnections2);
+            // set the owning side to null (unless already changed)
+            if ($individConnections2->getIndivid2() === $this) {
+                $individConnections2->setIndivid2(null);
             }
         }
 

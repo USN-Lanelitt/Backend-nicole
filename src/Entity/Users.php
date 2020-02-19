@@ -17,15 +17,14 @@ class Users
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Individuals", inversedBy="Users", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToOne(targetEntity="App\Entity\Individuals", cascade={"persist", "remove"})
      */
     private $individ;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $nickname;
+    private $username;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -35,17 +34,12 @@ class Users
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $usertype;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
     private $active;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $news_subscription;
+    private $newsSubscription;
 
     public function getId(): ?int
     {
@@ -57,21 +51,21 @@ class Users
         return $this->individ;
     }
 
-    public function setIndivid(Individuals $individ): self
+    public function setIndivid(?Individuals $individ): self
     {
         $this->individ = $individ;
 
         return $this;
     }
 
-    public function getNickname(): ?string
+    public function getUsername(): ?string
     {
-        return $this->nickname;
+        return $this->username;
     }
 
-    public function setNickname(?string $nickname): self
+    public function setUsername(?string $username): self
     {
-        $this->nickname = $nickname;
+        $this->username = $username;
 
         return $this;
     }
@@ -84,18 +78,6 @@ class Users
     public function setPassword(?string $password): self
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    public function getUsertype(): ?bool
-    {
-        return $this->usertype;
-    }
-
-    public function setUsertype(?bool $usertype): self
-    {
-        $this->usertype = $usertype;
 
         return $this;
     }
@@ -114,12 +96,12 @@ class Users
 
     public function getNewsSubscription(): ?bool
     {
-        return $this->news_subscription;
+        return $this->newsSubscription;
     }
 
-    public function setNewsSubscription(?bool $news_subscription): self
+    public function setNewsSubscription(?bool $newsSubscription): self
     {
-        $this->news_subscription = $news_subscription;
+        $this->newsSubscription = $newsSubscription;
 
         return $this;
     }

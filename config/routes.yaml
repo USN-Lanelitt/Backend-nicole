@@ -7,6 +7,12 @@ get_all_users:
   controller: App\Controller\UserController::getAllUsers
   methods:    GET
 
+new_individ:
+  path: /newIndivid
+  controller: App\Controller\UserController::newIndivid
+  methods:    GET
+
+
 get_search:
   path: /users/getSearch
   controller: App\Controller\UserController::getSearch

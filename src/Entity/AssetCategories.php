@@ -21,7 +21,7 @@ class AssetCategories
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $categoryname;
+    private $categoryName;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -29,7 +29,7 @@ class AssetCategories
     private $active;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Assets", mappedBy="category", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Assets", mappedBy="category")
      */
     private $assets;
 
@@ -43,14 +43,14 @@ class AssetCategories
         return $this->id;
     }
 
-    public function getCategoryname(): ?string
+    public function getCategoryName(): ?string
     {
-        return $this->categoryname;
+        return $this->categoryName;
     }
 
-    public function setCategoryname(?string $categoryname): self
+    public function setCategoryName(?string $categoryName): self
     {
-        $this->categoryname = $categoryname;
+        $this->categoryName = $categoryName;
 
         return $this;
     }

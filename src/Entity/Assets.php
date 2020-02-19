@@ -24,24 +24,18 @@ class Assets
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AssetCategories", inversedBy="assets")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $category;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $assetname;
+    private $assetName;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $asset_condition;
 
     public function getId(): ?int
     {
@@ -72,14 +66,14 @@ class Assets
         return $this;
     }
 
-    public function getAssetname(): ?string
+    public function getAssetName(): ?string
     {
-        return $this->assetname;
+        return $this->assetName;
     }
 
-    public function setAssetname(?string $assetname): self
+    public function setAssetName(?string $assetName): self
     {
-        $this->assetname = $assetname;
+        $this->assetName = $assetName;
 
         return $this;
     }
@@ -92,18 +86,6 @@ class Assets
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getAssetCondition(): ?string
-    {
-        return $this->asset_condition;
-    }
-
-    public function setAssetCondition(?string $asset_condition): self
-    {
-        $this->asset_condition = $asset_condition;
 
         return $this;
     }
