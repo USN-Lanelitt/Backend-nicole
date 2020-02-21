@@ -3,7 +3,7 @@
 #    controller: App\Controller\DefaultController::index
 
 get_all_users:
-  path: /
+  path: /getAll
   controller: App\Controller\UserController::getAllUsers
   methods:    GET
 
@@ -12,6 +12,10 @@ new_individ:
   controller: App\Controller\UserController::newIndivid
   methods:    GET
 
+new_item:
+  path: /newItem
+  controller: App\Controller\UserController::newItem
+  methods:    GET
 
 get_search:
   path: /users/getSearch

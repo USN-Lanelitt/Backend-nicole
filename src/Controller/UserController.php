@@ -53,8 +53,6 @@ class UserController extends AbstractController
         $individ->setFirstname("Mari");
         $individ->setLastname("Hansen");
 
-     //   $individ = $this->getDoctrine()->getRepository(Individuals::class)->find(1);
-
         $asset = new Assets();
         $asset->setCategory($category);
         $asset ->setIndivid($individ);
@@ -66,12 +64,31 @@ class UserController extends AbstractController
         $entityManager->persist($asset);
         $entityManager->flush();
 
-
-
-        // $entityManager->flush();
-
         return new JsonResponse('Nytt individ');
+    }
 
+    public function newItem(){
+
+        $this->logger->info('newitem');
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $category = $this->getDoctrine()->getRepository(AssetCategories::class)->find(1);
+
+        $individ = $this->getDoctrine()->getRepository(Individuals::class)->find(7);
+
+        $asset = new Assets();
+        $asset->setCategory($category);
+        $asset ->setIndivid($individ);
+        $asset->setAssetname('Mus');
+        $asset->setDescription('Trådløs');
+
+        $entityManager->persist($category);
+        $entityManager->persist($individ);
+        $entityManager->persist($asset);
+        $entityManager->flush();
+
+        return new JsonResponse('Ny eiendel');
     }
 
     public function getAllUsers() {
@@ -87,7 +104,6 @@ class UserController extends AbstractController
                 return $object->getId();
             }
         ]);
-
     }
 
     public function getUserItems($iId){
